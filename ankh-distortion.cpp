@@ -43,6 +43,7 @@ protected:
         if(in > 1.0) {
             if(hardclipped) {
                 out = 1.0 - (*hardclipangle * (float)hcaseq) / samplerate;
+                if(out < 0.0) out = 0.0;
                 hcaseq++;
             } else {
                 out = 1.0;
@@ -77,8 +78,8 @@ protected:
         toutr = *dcoffset + toutr;
 
         // hard clipping
-        toutl = hardclip(toutl);
-        toutr = hardclip(toutr);
+        toutl = (toutl > 0.0) ? hardclip(toutl) : -hardclip(-toutl);
+        toutr = (toutr > 0.0) ? hardclip(toutr) : -hardclip(-toutr);
 
         // mixing TODO
         *outl = toutl;
