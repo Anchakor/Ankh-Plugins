@@ -54,14 +54,18 @@ protected:
 
     void ankhprocess(float *inl, float *inr, float *outl, float *outr, 
             float *mix, float *softclip, float *hardclipgain, float *hardclipangle, float *dcoffset) {
+        toutl = *inl;
+        toutr = *inr;
 
         // soft clipping
         if(oldsoftclip != *softclip) {
             sclip = pow(*softclip, 2.0);
             oldsoftclip = *softclip;
         }
-        toutl = (1.0 / atan(sclip)) * atan(*outl * (sclip));
-        toutr = (1.0 / atan(sclip)) * atan(*outr * (sclip));
+        if(*softclip > 1e-20) {
+        toutl = (1.0 / atan(sclip)) * atan(toutl * (sclip));
+        toutr = (1.0 / atan(sclip)) * atan(toutr * (sclip));
+        }
 
         // gain
         toutl = *hardclipgain * toutl;
@@ -92,11 +96,11 @@ public:
                     p<float>(1)+sample, 
                     p<float>(2)+sample, 
                     p<float>(3)+sample, 
-                    p<float>(4)+sample, 
-                    p<float>(5)+sample, 
-                    p<float>(6)+sample, 
-                    p<float>(7)+sample, 
-                    p<float>(8)+sample);
+                    p<float>(4), 
+                    p<float>(5), 
+                    p<float>(6), 
+                    p<float>(7), 
+                    p<float>(8));
         }
     }
 };
