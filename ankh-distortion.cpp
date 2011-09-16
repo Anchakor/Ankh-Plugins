@@ -35,12 +35,16 @@ private:
     float toutl, toutr;
     float samplerate, *mix, *softclip, oldsoftclip, sclip, *hardclipgain, *hardclipangle, *dcoffset;
     bool hardclipped;
-    int hcaseq;
+    int hcaseql, hcaseqr; 
 
 protected:
-    float hardclip(float in) {
+    inline float hardclip(float in, int& hcaseq) {
         float out;
-        if(in > 1.0) {
+        bool invert;
+        invert = (in < 0.0) ? true : false;
+        out = (invert) ? -in : in;
+
+        if(out > 1.0) {
             if(hardclipped) {
                 out = 1.0 - (*hardclipangle * (float)hcaseq) / samplerate;
                 if(out < 0.0) out = 0.0;
@@ -51,6 +55,7 @@ protected:
             }
             hardclipped = true;
         } else hardclipped = false;
+        out = (invert) ? -out : out;
         return out;
     }
 
@@ -78,8 +83,8 @@ protected:
         toutr = *dcoffset + toutr;
 
         // hard clipping
-        toutl = (toutl > 0.0) ? hardclip(toutl) : -hardclip(-toutl);
-        toutr = (toutr > 0.0) ? hardclip(toutr) : -hardclip(-toutr);
+        toutl = hardclip(toutl, hcaseql);
+        toutr = hardclip(toutr, hcaseqr);
 
         // mixing TODO
         *outl = toutl;
@@ -89,7 +94,8 @@ protected:
 public:
     ANKHPLUGIN(double sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
         samplerate = sample_rate;
-        hcaseq = 1;
+        hcaseql = 1;
+        hcaseqr = 1;
     }
     
     void run(uint32_t sample_count) {
