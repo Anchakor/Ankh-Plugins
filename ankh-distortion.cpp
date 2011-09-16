@@ -32,6 +32,7 @@
 
 class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
+    float toutl, toutr;
     float samplerate, *mix, *softclip, oldsoftclip, sclip, *hardclipgain, *hardclipangle, *dcoffset;
     bool hardclipped;
     int hcaseq;
@@ -54,8 +55,6 @@ protected:
     void ankhprocess(float *inl, float *inr, float *outl, float *outr, 
             float *mix, float *softclip, float *hardclipgain, float *hardclipangle, float *dcoffset) {
 
-        float toutl, toutr;
-
         // soft clipping
         if(oldsoftclip != *softclip) {
             sclip = pow(*softclip, 2.0);
@@ -75,14 +74,16 @@ protected:
         // hard clipping
         toutl = hardclip(toutl);
         toutr = hardclip(toutr);
+
+        // mixing TODO
+        *outl = toutl;
+        *outr = toutr;
     }
 
 public:
     ANKHPLUGIN(double sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
         samplerate = sample_rate;
         hcaseq = 1;
-    }
-    ~ANKHPLUGIN() {
     }
     
     void run(uint32_t sample_count) {
