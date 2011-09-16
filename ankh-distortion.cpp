@@ -39,17 +39,18 @@ private:
 
 protected:
     float hardclip(float in) {
+        float out;
         if(in > 1.0) {
             if(hardclipped) {
-                in = 1.0 - (*hardclipangle * hcaseq) / samplerate;
+                out = 1.0 - (*hardclipangle * (float)hcaseq) / samplerate;
                 hcaseq++;
             } else {
-                in = 1.0;
+                out = 1.0;
                 hcaseq = 1;
             }
             hardclipped = true;
         } else hardclipped = false;
-        return in;
+        return out;
     }
 
     void ankhprocess(float *inl, float *inr, float *outl, float *outr, 
