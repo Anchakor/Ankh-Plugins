@@ -33,32 +33,26 @@
 class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
     float toutl, toutr;
-    float samplerate, *mix, *softclip, oldsoftclip, sclip, *hardclipgain, *hardclipangle, *dcoffset;
-    bool hardclippedl, hardclippedr;
-    float hcaseql, hcaseqr; 
+    float samplerate, oldsoftclip, sclip;
+    float hpfOldInL, hpfOldOutL, hpfOldInR, hpfOldOutR;
 
 protected:
-    inline float hardclip(float in, float& hcaseq, bool& hardclipped, float hcangle) {
-        float out;
-        bool invert;
-        invert = (in < 0.0) ? true : false;
-        out = (invert) ? -in : in;
+    float hardclip(float in) {
+        if(in > 1.0) {
+            return 1.0;
+        } else if(in < -1.0) {
+            return -1.0;
+        } else
+            return in;
+    }
 
-        if(out > 1.0) {
-            if(hardclipped) {
-                out = 1.0 - (hcangle * 100 * hcaseq) / samplerate;
-                if(out < 0.0) out = 0.0;
-                hcaseq++;
-            } else {
-                out = 1.0;
-                hcaseq = 1;
-            }
-            hardclipped = true;
-        } else { 
-            hardclipped = false;
-            hcaseq = 1;
-        }
-        out = (invert) ? -out : out;
+    float hpf(float in, float& oldin, float& oldout) {
+        // y(n) = x(n) - x(n-1) + R * y(n-1) 
+        // (-3dB @ 30Hz): R = 1-(190/samplerate) // R = 1 - (pi*2 * frequency /samplerate) (pi=3.14159265358979)
+        
+        float R = 1 - (3.0 / samplerate);
+        float out = (in + R * oldin) - oldin;   //float out = in - oldin + R * oldout;
+        oldin = in + R * oldin;                 //oldin = in; oldout = out;
         return out;
     }
 
@@ -72,22 +66,22 @@ protected:
             sclip = pow(*softclip * 30, 2.0);
             oldsoftclip = *softclip;
         }
-        if(*softclip > 1e-20) {
-        toutl = (1.0 / atan(sclip)) * atan(toutl * (sclip));
-        toutr = (1.0 / atan(sclip)) * atan(toutr * (sclip));
+        if(sclip > 1e-30) {
+            toutl = (1.0 / atan(sclip)) * atan(*dcoffset + (toutl * sclip));
+            toutr = (1.0 / atan(sclip)) * atan(*dcoffset + (toutr * sclip));
         }
+
+        // 1 pole HPF cutting < 1Hz to fix the dc offset
+        toutl = hpf(toutl, hpfOldInL, hpfOldOutL);
+        toutr = hpf(toutr, hpfOldInR, hpfOldOutR);
 
         // gain
         toutl = (1 + *hardclipgain * 30) * toutl;
         toutr = (1 + *hardclipgain * 30) * toutr;
 
-        // dc offset
-        toutl = *dcoffset + toutl;
-        toutr = *dcoffset + toutr;
-
         // hard clipping
-        toutl = hardclip(toutl, hcaseql, hardclippedl, *hardclipangle);
-        toutr = hardclip(toutr, hcaseqr, hardclippedr, *hardclipangle);
+        toutl = hardclip(toutl);
+        toutr = hardclip(toutr);
 
         // mixing
         *outl = (*mix * toutl) + ((1 - *mix) * *inl);
@@ -97,10 +91,8 @@ protected:
 public:
     ANKHPLUGIN(double sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
         samplerate = sample_rate;
-        hcaseql = 1.0;
-        hcaseqr = 1.0;
-        hardclippedl = false;
-        hardclippedr = false;
+        hpfOldInL = 0.0; hpfOldOutL = 0.0;
+        hpfOldInR = 0.0; hpfOldOutR = 0.0;
     }
     
     void run(uint32_t sample_count) {

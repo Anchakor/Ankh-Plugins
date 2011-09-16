@@ -103,9 +103,9 @@
 		lv2:index 8 ;
 		lv2:symbol "dcoffset" ;
 		lv2:name "DC Offset" ;
-		lv2:default 0.2 ;
-		lv2:minimum -3.01 ;
-		lv2:maximum 3.01 ;
+		lv2:default 1.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
 #	] ,	[
 #		a lv2:InputPort ,
 #			lv2:ControlPort ;
