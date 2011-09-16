@@ -46,7 +46,7 @@ protected:
 
         if(out > 1.0) {
             if(hardclipped) {
-                out = 1.0 - (hcangle * hcaseq) / samplerate;
+                out = 1.0 - (hcangle * 100 * hcaseq) / samplerate;
                 if(out < 0.0) out = 0.0;
                 hcaseq++;
             } else {
@@ -69,7 +69,7 @@ protected:
 
         // soft clipping
         if(oldsoftclip != *softclip) {
-            sclip = pow(*softclip, 2.0);
+            sclip = pow(*softclip, 2.0) * 30;
             oldsoftclip = *softclip;
         }
         if(*softclip > 1e-20) {
@@ -78,8 +78,8 @@ protected:
         }
 
         // gain
-        toutl = *hardclipgain * toutl;
-        toutr = *hardclipgain * toutr;
+        toutl = (1 + *hardclipgain * 30) * toutl;
+        toutr = (1 + *hardclipgain * 30) * toutr;
 
         // dc offset
         toutl = *dcoffset + toutl;
