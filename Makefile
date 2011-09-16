@@ -29,3 +29,6 @@ uninstall:
 
 clean:
 	rm -rf $(BUNDLE) ankh-distortion.so ankh-distortion.o LV2Plugin.o
+
+pack:
+	zip ankh-distortion.zip manifest.ttl ankh-distortion.ttl ankh-distortion.cpp LV2Plugin.cpp LV2Plugin.hpp LV2Extensions.hpp lv2_types.hpp LICENSE.txt Makefile
