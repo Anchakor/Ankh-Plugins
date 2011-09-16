@@ -69,7 +69,7 @@ protected:
 
         // soft clipping
         if(oldsoftclip != *softclip) {
-            sclip = pow(*softclip, 2.0) * 30;
+            sclip = pow(*softclip * 30, 2.0);
             oldsoftclip = *softclip;
         }
         if(*softclip > 1e-20) {
@@ -89,9 +89,9 @@ protected:
         toutl = hardclip(toutl, hcaseql, hardclippedl, *hardclipangle);
         toutr = hardclip(toutr, hcaseqr, hardclippedr, *hardclipangle);
 
-        // mixing TODO
-        *outl = toutl;
-        *outr = toutr;
+        // mixing
+        *outl = (*mix * toutl) + ((1 - *mix) * *inl);
+        *outr = (*mix * toutr) + ((1 - *mix) * *inr);
     }
 
 public:
