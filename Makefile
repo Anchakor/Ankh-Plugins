@@ -11,7 +11,7 @@ $(BUNDLE): manifest.ttl ankh-distortion.ttl ankh-distortion.so
 	cp manifest.ttl ankh-distortion.ttl ankh-distortion.so $(BUNDLE)
 
 ankh-distortion.so: ankh-distortion.o
-	$(CXXC) $(CXXFLAGS) -shared -fPIC -DPIC LV2Plugin.o ankh-distortion.o -o ankh-distortion.so
+	$(CXXC) $(CXXFLAGS) -shared -fPIC -DPIC LV2Plugin.o ankh-distortion.o `pkg-config --libs --cflags samplerate` -o ankh-distortion.so
 
 ankh-distortion.o: LV2Plugin.o
 	$(CXXC) -c $(CXXFLAGS) ankh-distortion.cpp -o ankh-distortion.o

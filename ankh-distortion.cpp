@@ -19,21 +19,28 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <samplerate.h>
 
 #include "LV2Plugin.hpp"
 
+#define RESAMPLES 1024000
 
 #define ANKHPLUGIN ANKHDistortion
 #define ANKHPLUG_URI "http://mud.cz/lv2/plugins/ankh-distortion"
 #define NPARAMETERS 4
 #define NINSOUTS 4
 
-
 class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
     float toutl, toutr;
     float samplerate, oldsoftclip, sclip;
     float hpfOldInL, hpfOldOutL, hpfOldInR, hpfOldOutR;
+    float resampledDataL[RESAMPLES];
+    float resampledDataOutL[RESAMPLES];
+    float resampledDataR[RESAMPLES];
+    float resampledDataOutR[RESAMPLES];
+    SRC_DATA src;
 
 protected:
     float hardclip(float in) {
@@ -95,15 +102,52 @@ public:
     }
     
     void run(uint32_t sample_count) {
-        for(uint32_t sample=0; sample < sample_count; sample++){
-            ankhprocess(p<float>(0)+sample, 
-                    p<float>(1)+sample, 
-                    p<float>(2)+sample, 
-                    p<float>(3)+sample, 
-                    p<float>(4), 
-                    p<float>(5), 
-                    p<float>(6), 
-                    p<float>(7));
+        double resampleRatio = 2.0;
+        
+        uint32_t pos = 0;
+        int r;
+
+        while(pos < sample_count) {
+            src.src_ratio = 1.0 / resampleRatio;
+            src.input_frames = sample_count - pos;
+            src.output_frames = RESAMPLES;
+
+            src.data_in = p<float>(0)+pos;
+            src.data_out = resampledDataL;
+            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+
+            src.data_in = p<float>(1)+pos;
+            src.data_out = resampledDataR;
+            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+
+            uint32_t newpos = pos + src.input_frames_used;
+            for(int sample=0; sample < src.output_frames_gen; sample++){
+                ankhprocess(resampledDataL+sample, 
+                        resampledDataR+sample, 
+                        resampledDataOutL+sample, 
+                        resampledDataOutR+sample, 
+                        p<float>(4), 
+                        p<float>(5), 
+                        p<float>(6), 
+                        p<float>(7));
+            }
+            src.src_ratio = resampleRatio;
+            src.input_frames = src.output_frames_gen;
+            src.output_frames = sample_count - pos;
+
+            src.data_in = resampledDataOutL;
+            src.data_out = p<float>(3)+pos;
+            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+
+            src.data_in = resampledDataOutR;
+            src.data_out = p<float>(4)+pos;
+            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+
+            pos = newpos;
         }
     }
 };
