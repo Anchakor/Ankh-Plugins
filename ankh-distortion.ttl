@@ -74,38 +74,29 @@
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 5 ;
-		lv2:symbol "softclip" ;
-		lv2:name "Soft Clip Factor" ;
-		lv2:default 0.5 ;
+		lv2:symbol "dcoffset" ;
+		lv2:name "DC Offset" ;
+		lv2:default 1.25 ;
 		lv2:minimum 0.0 ;
-		lv2:maximum 1.0 ;
+		lv2:maximum 3.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 6 ;
-		lv2:symbol "hardclipgain" ;
-		lv2:name "Gain" ;
-		lv2:default 0.1 ;
+		lv2:symbol "softclip" ;
+		lv2:name "Soft Clip Factor" ;
+		lv2:default 0.4 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 7 ;
-		lv2:symbol "hardclipangle" ;
-		lv2:name "Hard Clip Warp" ;
+		lv2:symbol "hardclipgain" ;
+		lv2:name "Gain" ;
 		lv2:default 0.0 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
-	] ,	[
-		a lv2:InputPort ,
-			lv2:ControlPort ;
-		lv2:index 8 ;
-		lv2:symbol "dcoffset" ;
-		lv2:name "DC Offset" ;
-		lv2:default 1.5 ;
-		lv2:minimum 0.0 ;
-		lv2:maximum 3.0 ;
 #	] ,	[
 #		a lv2:InputPort ,
 #			lv2:ControlPort ;

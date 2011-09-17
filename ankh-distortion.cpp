@@ -25,7 +25,7 @@
 
 #define ANKHPLUGIN ANKHDistortion
 #define ANKHPLUG_URI "http://mud.cz/lv2/plugins/ankh-distortion"
-#define NPARAMETERS 5
+#define NPARAMETERS 4
 #define NINSOUTS 4
 
 
@@ -56,7 +56,7 @@ protected:
     }
 
     void ankhprocess(float *inl, float *inr, float *outl, float *outr, 
-            float *mix, float *softclip, float *hardclipgain, float *hardclipangle, float *dcoffset) {
+            float *mix, float *dcoffset, float *softclip, float *hardclipgain) {
         toutl = *inl;
         toutr = *inr;
 
@@ -103,8 +103,7 @@ public:
                     p<float>(4), 
                     p<float>(5), 
                     p<float>(6), 
-                    p<float>(7), 
-                    p<float>(8));
+                    p<float>(7));
         }
     }
 };
