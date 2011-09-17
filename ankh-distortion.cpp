@@ -24,7 +24,7 @@
 
 #include "LV2Plugin.hpp"
 
-#define RESAMPLES 1024000
+#define RESAMPLES 8192
 
 #define ANKHPLUGIN ANKHDistortion
 #define ANKHPLUG_URI "http://mud.cz/lv2/plugins/ankh-distortion"
@@ -36,11 +36,11 @@ private:
     float toutl, toutr;
     float samplerate, oldsoftclip, sclip;
     float hpfOldInL, hpfOldOutL, hpfOldInR, hpfOldOutR;
-    float resampledDataL[RESAMPLES];
-    float resampledDataOutL[RESAMPLES];
-    float resampledDataR[RESAMPLES];
-    float resampledDataOutR[RESAMPLES];
-    SRC_DATA src;
+    float *resampledDataL;
+    float *resampledDataOutL;
+    float *resampledDataR;
+    float *resampledDataOutR;
+    SRC_DATA src; int srcError; SRC_STATE *srcState;
 
 protected:
     float hardclip(float in) {
@@ -99,28 +99,50 @@ public:
         samplerate = sample_rate;
         hpfOldInL = 0.0; hpfOldOutL = 0.0;
         hpfOldInR = 0.0; hpfOldOutR = 0.0;
+        resampledDataL =    (float *)calloc(RESAMPLES, sizeof(float));
+        resampledDataR =    (float *)calloc(RESAMPLES, sizeof(float));
+        resampledDataOutL = (float *)calloc(RESAMPLES, sizeof(float));
+        resampledDataOutR = (float *)calloc(RESAMPLES, sizeof(float));
+        srcState = src_new(SRC_SINC_FASTEST, 1, &srcError);
+        if (srcState == NULL) {
+            fprintf(stderr, "src_new() error: %s\n", src_strerror(srcError));
+        }
+
+    }
+    ~ANKHPLUGIN() {
+        src_delete(srcState);
+        free(resampledDataL);
+        free(resampledDataR);
+        free(resampledDataOutL);
+        free(resampledDataOutR);
     }
     
     void run(uint32_t sample_count) {
-        double resampleRatio = 2.0;
+        double resampleRatio = 2;
         
         uint32_t pos = 0;
         int r;
 
         while(pos < sample_count) {
-            src.src_ratio = 1.0 / resampleRatio;
+            src.src_ratio = resampleRatio;
+            srcError = src_set_ratio(srcState, src.src_ratio);
+            if (srcError) {
+                fprintf(stderr, "src_set_ratio() error: %s, new_ratio = %g\n", src_strerror(srcError), src.src_ratio);
+            }
             src.input_frames = sample_count - pos;
             src.output_frames = RESAMPLES;
 
             src.data_in = p<float>(0)+pos;
             src.data_out = resampledDataL;
-            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            r = src_process(srcState, &src);
             if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+            src_reset(srcState);
 
             src.data_in = p<float>(1)+pos;
             src.data_out = resampledDataR;
-            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            r = src_process(srcState, &src);
             if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+            src_reset(srcState);
 
             uint32_t newpos = pos + src.input_frames_used;
             for(int sample=0; sample < src.output_frames_gen; sample++){
@@ -133,19 +155,25 @@ public:
                         p<float>(6), 
                         p<float>(7));
             }
-            src.src_ratio = resampleRatio;
+            src.src_ratio = 1.0 / resampleRatio;
+            srcError = src_set_ratio(srcState, src.src_ratio);
+            if (srcError) {
+                fprintf(stderr, "src_set_ratio() error: %s, new_ratio = %g\n", src_strerror(srcError), src.src_ratio);
+            }
             src.input_frames = src.output_frames_gen;
             src.output_frames = sample_count - pos;
 
             src.data_in = resampledDataOutL;
             src.data_out = p<float>(3)+pos;
-            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            r = src_process(srcState, &src);
             if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+            src_reset(srcState);
 
             src.data_in = resampledDataOutR;
             src.data_out = p<float>(4)+pos;
-            r = src_simple(&src, SRC_SINC_FASTEST, 1);
+            r = src_process(srcState, &src);
             if(r != 0) { fprintf(stderr, "%s\n", src_strerror(r)); return; }
+            src_reset(srcState);
 
             pos = newpos;
         }
