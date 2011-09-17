@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lv2.h"
 #include "LV2Plugin.hpp"
 
 

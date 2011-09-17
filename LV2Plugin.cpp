@@ -25,8 +25,9 @@
 namespace LV2 {
 
 	DescList::~DescList() {
-		for (unsigned i = 0; i < size(); ++i)
-			delete [] operator[](i).URI;
+	//	for (unsigned i = 0; i < size(); ++i)
+	//		delete [] operator[](i).URI;
+    //	drobilla should fix this
 	}
 
 	DescList& get_lv2_descriptors() {
