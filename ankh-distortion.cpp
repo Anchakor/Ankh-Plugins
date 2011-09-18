@@ -45,7 +45,7 @@ public:
                     p<float>(5), 
                     p<float>(6), 
                     p<float>(7));
-            distl->process(p<float>(1)+sample, 
+            distr->process(p<float>(1)+sample, 
                     p<float>(3)+sample, 
                     p<float>(4), 
                     p<float>(5), 
