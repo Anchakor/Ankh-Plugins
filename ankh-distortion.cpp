@@ -30,7 +30,7 @@ public:
         hpfOldInL = 0.0; hpfOldOutL = 0.0;
         distl = new Ankh::Distortion(sample_rate, &hpfOldInL, &hpfOldOutL);
         hpfOldInR = 0.0; hpfOldOutR = 0.0;
-        distl = new Ankh::Distortion(sample_rate, &hpfOldInR, &hpfOldOutR);
+        distr = new Ankh::Distortion(sample_rate, &hpfOldInR, &hpfOldOutR);
     }
 
     ~ANKHPLUGIN() {
