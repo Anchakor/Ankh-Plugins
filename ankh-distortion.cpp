@@ -34,7 +34,7 @@ public:
     }
 
     ~ANKHPLUGIN() {
-        free(distl); free(distr);
+        delete distl; delete distr;
     }
     
     void run(uint32_t sample_count) {

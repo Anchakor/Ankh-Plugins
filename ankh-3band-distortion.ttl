@@ -1,0 +1,239 @@
+# LV2 Amp Example Plugin
+# Copyright 2006-2011 Steve Harris <steve@plugin.org.uk>,
+#                     David Robillard <d@drobilla.net>
+#
+# Modified by Jiří Procházka <ojirio@gmail.com>
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix lv2: <http://lv2plug.in/ns/lv2core#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix pg: <http://lv2plug.in/ns/ext/port-groups#> .
+
+<http://mud.cz/lv2/plugins/ankh-3band-distortion>
+	a lv2:Plugin ,
+		lv2:DistortionPlugin ;
+	doap:name "Ankh-3band-Distortion" ;
+	doap:license <http://www.gnu.org/licenses/gpl-3.0.txt> ;
+	lv2:property lv2:hardRtCapable ;
+	lv2:port [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+        pg:inGroup pg:StereoGroup ;
+        pg:role pg:leftChannel ;
+		lv2:index 0 ;
+		lv2:symbol "inl" ;
+		lv2:name "In (left)"
+	] ,	[
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+        pg:inGroup pg:StereoGroup ;
+        pg:role pg:rightChannel ;
+		lv2:index 1 ;
+		lv2:symbol "inr" ;
+		lv2:name "In (right)"
+	] ,	[
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+        pg:inGroup pg:StereoGroup ;
+        pg:role pg:leftChannel ;
+		lv2:index 2 ;
+		lv2:symbol "outl" ;
+		lv2:name "Out (left)"
+	] ,	[
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+        pg:inGroup pg:StereoGroup ;
+        pg:role pg:rightChannel ;
+		lv2:index 3 ;
+		lv2:symbol "outr" ;
+		lv2:name "Out (right)"
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 4 ;
+		lv2:symbol "split1" ;
+		lv2:name "Split 1" ;
+		lv2:default 200.0 ;
+		lv2:minimum 20.0 ;
+		lv2:maximum 10000.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 5 ;
+		lv2:symbol "split2" ;
+		lv2:name "Split 2" ;
+		lv2:default 3000.0 ;
+		lv2:minimum 20.0 ;
+		lv2:maximum 10000.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 6 ;
+		lv2:symbol "dcoffset1" ;
+		lv2:name "DC Offset 1" ;
+		lv2:default 0.1 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 7 ;
+		lv2:symbol "softclip1" ;
+		lv2:name "Soft Clip Factor 1" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 8 ;
+		lv2:symbol "hardclipgain1" ;
+		lv2:name "Gain 1" ;
+		lv2:default 0.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 9 ;
+		lv2:symbol "mix1" ;
+		lv2:name "Dry/Wet 1" ;
+		lv2:default 0.8 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 10 ;
+		lv2:symbol "dcoffset2" ;
+		lv2:name "DC Offset 2" ;
+		lv2:default 0.4 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 11 ;
+		lv2:symbol "softclip2" ;
+		lv2:name "Soft Clip Factor 2" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 12 ;
+		lv2:symbol "hardclipgain2" ;
+		lv2:name "Gain 2" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 13 ;
+		lv2:symbol "mix2" ;
+		lv2:name "Dry/Wet 2" ;
+		lv2:default 0.8 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 14 ;
+		lv2:symbol "dcoffset3" ;
+		lv2:name "DC Offset 3" ;
+		lv2:default 0.8 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 15 ;
+		lv2:symbol "softclip3" ;
+		lv2:name "Soft Clip Factor 3" ;
+		lv2:default 0.2 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 16 ;
+		lv2:symbol "hardclipgain3" ;
+		lv2:name "Gain 3" ;
+		lv2:default 0.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 17 ;
+		lv2:symbol "mix3" ;
+		lv2:name "Dry/Wet 3" ;
+		lv2:default 0.8 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 18 ;
+		lv2:symbol "vol1" ;
+		lv2:name "Volume 1" ;
+		lv2:default 2.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 19 ;
+		lv2:symbol "vol2" ;
+		lv2:name "Volume 2" ;
+		lv2:default 1.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
+	] ,	[
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 20 ;
+		lv2:symbol "vol3" ;
+		lv2:name "Volume 3" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 3.0 ;
+#	] ,	[
+#		a lv2:InputPort ,
+#			lv2:ControlPort ;
+#		lv2:index 0 ;
+#		lv2:symbol "gain" ;
+#		lv2:name "Gain" ;
+#		lv2:default 0.0 ;
+#		lv2:minimum -90.0 ;
+#		lv2:maximum 24.0 ;
+#		lv2:scalePoint [
+#			rdfs:label "+5" ;
+#			rdf:value 5.0
+#		] ,	[
+#			rdfs:label "0" ;
+#			rdf:value 0.0
+#		] ,	[
+#			rdfs:label "-5" ;
+#			rdf:value -5.0
+#		] ,	[
+#			rdfs:label "-10" ;
+#			rdf:value -10.0
+#		]
+	] .
