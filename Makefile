@@ -46,10 +46,10 @@ $(BDIR):
 	mkdir -p $(BDIR)
 
 $(BDIR)/%.so: $(BDIR)/%.o $(BDIR)/LV2Plugin.o
-	$(CXXC) $(CXXFLAGS) -shared -fPIC -DPIC $< -o $@
+	$(CXXC) $(CXXFLAGS) -shared -fPIC -DPIC $< $(BDIR)/LV2Plugin.o -o $@
 
 $(BDIR)/%.o: $(SDIR)/%.cpp
-	$(CXXC) $(CFLAGS) -c $< -o $@
+	$(CXXC) $(CXXFLAGS) -c $< -o $@
 
 $(BDIR)/%.ttl: $(SDIR)/%.ttl
 	cp $< $@
