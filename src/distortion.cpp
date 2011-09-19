@@ -31,13 +31,12 @@ class Distortion {
 private:
     float tout;
     float samplerate, oldsoftclip, sclip;
-    float *hpfOldIn, *hpfOldOut;
+    float hpfOldIn, hpfOldOut;
 
 public:
-    Distortion(double sample_rate, float *hpfOldIn_, float *hpfOldOut_) {
+    Distortion(double sample_rate) {
         samplerate = sample_rate;
-        hpfOldIn = hpfOldIn_;
-        hpfOldOut = hpfOldOut_;
+        hpfOldIn = 0.0; hpfOldOut = 0.0;
     }
 
     float hardclip(float in) {
@@ -49,13 +48,13 @@ public:
             return in;
     }
 
-    float hpf(float in, float& oldin, float& oldout) {
+    float hpf(float in) {
         // y(n) = x(n) - x(n-1) + R * y(n-1) 
         // (-3dB @ 30Hz): R = 1-(190/samplerate) // R = 1 - (pi*2 * frequency /samplerate) (pi=3.14159265358979)
         
         float R = 1 - (3.0 / samplerate);
-        float out = (in + R * oldin) - oldin;   //float out = in - oldin + R * oldout;
-        oldin = in + R * oldin;                 //oldin = in; oldout = out;
+        float out = (in + R * hpfOldIn) - hpfOldIn;   //float out = in - hpfOldIn + R * hpfOldOut;
+        hpfOldIn = in + R * hpfOldIn;                 //hpfOldIn = in; hpfOldOut = out;
         return out;
     }
 
@@ -74,7 +73,7 @@ public:
         }
 
         // 1 pole HPF cutting < 1Hz to fix the dc offset
-        tout = hpf(tout, *hpfOldIn, *hpfOldOut);
+        tout = hpf(tout);
 
         // gain
         tout = (1 + *hardclipgain * 30) * tout;

@@ -34,17 +34,14 @@
 
 class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
-    float hpfOldInL, hpfOldOutL, hpfOldInR, hpfOldOutR;
     Ankh::Distortion *distl, *distr;
 
 protected:
 
 public:
     ANKHPLUGIN(double sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
-        hpfOldInL = 0.0; hpfOldOutL = 0.0;
-        distl = new Ankh::Distortion(sample_rate, &hpfOldInL, &hpfOldOutL);
-        hpfOldInR = 0.0; hpfOldOutR = 0.0;
-        distr = new Ankh::Distortion(sample_rate, &hpfOldInR, &hpfOldOutR);
+        distl = new Ankh::Distortion(sample_rate);
+        distr = new Ankh::Distortion(sample_rate);
     }
 
     ~ANKHPLUGIN() {

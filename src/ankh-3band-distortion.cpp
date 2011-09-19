@@ -37,11 +37,8 @@ class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
     double samplerate;
 
-    float hpfOldInL1, hpfOldOutL1, hpfOldInR1, hpfOldOutR1;
     Ankh::Distortion *distl1, *distr1;
-    float hpfOldInL2, hpfOldOutL2, hpfOldInR2, hpfOldOutR2;
     Ankh::Distortion *distl2, *distr2;
-    float hpfOldInL3, hpfOldOutL3, hpfOldInR3, hpfOldOutR3;
     Ankh::Distortion *distl3, *distr3;
 
     dsp::biquad_d2<float> lpL0, lpR0, lpL1, lpR1, hpL0, hpR0, hpL1, hpR1;
@@ -53,18 +50,12 @@ public:
     ANKHPLUGIN(double sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
         samplerate = sample_rate;
 
-        hpfOldInL1 = 0.0; hpfOldOutL1 = 0.0;
-        distl1 = new Ankh::Distortion(sample_rate, &hpfOldInL1, &hpfOldOutL1);
-        hpfOldInR1 = 0.0; hpfOldOutR1 = 0.0;
-        distr1 = new Ankh::Distortion(sample_rate, &hpfOldInR1, &hpfOldOutR1);
-        hpfOldInL2 = 0.0; hpfOldOutL2 = 0.0;
-        distl2 = new Ankh::Distortion(sample_rate, &hpfOldInL2, &hpfOldOutL2);
-        hpfOldInR2 = 0.0; hpfOldOutR2 = 0.0;
-        distr2 = new Ankh::Distortion(sample_rate, &hpfOldInR2, &hpfOldOutR2);
-        hpfOldInL3 = 0.0; hpfOldOutL3 = 0.0;
-        distl3 = new Ankh::Distortion(sample_rate, &hpfOldInL3, &hpfOldOutL3);
-        hpfOldInR3 = 0.0; hpfOldOutR3 = 0.0;
-        distr3 = new Ankh::Distortion(sample_rate, &hpfOldInR3, &hpfOldOutR3);
+        distl1 = new Ankh::Distortion(sample_rate);
+        distr1 = new Ankh::Distortion(sample_rate);
+        distl2 = new Ankh::Distortion(sample_rate);
+        distr2 = new Ankh::Distortion(sample_rate);
+        distl3 = new Ankh::Distortion(sample_rate);
+        distr3 = new Ankh::Distortion(sample_rate);
     }
 
     ~ANKHPLUGIN() {
