@@ -1,5 +1,6 @@
 ###
-NAME = ankh-plugins
+NAMEPREFIX = ankh-
+NAME = $(NAMEPREFIX)plugins
 PLUGINS = distortion 3band-distortion
 HEADERS = *.hpp *.h
 MISC = LICENSE.txt Makefile
@@ -11,9 +12,9 @@ CXXFLAGS=-g -Wall
 BDIR = build
 SDIR = src
 
-SRCS = $(addprefix ankh-, $(addsuffix .cpp, $(PLUGINS)))
-LIBS = $(addprefix ankh-, $(addsuffix .so, $(PLUGINS)))
-TTLS = manifest.ttl $(addprefix ankh-, $(addsuffix .ttl, $(PLUGINS)))
+SRCS = $(addprefix $(NAMEPREFIX), $(addsuffix .cpp, $(PLUGINS)))
+LIBS = $(addprefix $(NAMEPREFIX), $(addsuffix .so, $(PLUGINS)))
+TTLS = manifest.ttl $(addprefix $(NAMEPREFIX), $(addsuffix .ttl, $(PLUGINS)))
 COMPONENTS = $(addprefix $(BDIR)/, $(LIBS) $(TTLS))
 
 BUNDLE = $(NAME).lv2
