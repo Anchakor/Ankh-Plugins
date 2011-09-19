@@ -3,11 +3,12 @@ CXXC=g++
 CXXFLAGS=-g -Wall
 
 NAME = ankh-plugins
+LIBS = ankh-distortion.so ankh-3band-distortion.so
 
 BUNDLE = $(NAME).lv2
 INSTALL_DIR = /usr/local/lib/lv2
 
-$(BUNDLE): *.so *.ttl
+$(BUNDLE): $(LIBS) *.ttl
 	rm -rf $(BUNDLE)
 	mkdir $(BUNDLE)
 	cp *.so *.ttl $(BUNDLE)
