@@ -23,6 +23,12 @@
 
 # Data (list of resources in this bundle, hence "manifest")
 
+<http://mud.cz/lv2/plugins/ankh-4band-compressor>
+	a lv2:Plugin ;
+	lv2:binary <ankh-4band-compressor.so>  ;
+	rdfs:seeAlso <ankh-4band-compressor.ttl> ;
+	doap:maintainer <http://mud.cz/foaf.rdf#ojirio> .
+
 <http://mud.cz/lv2/plugins/ankh-3band-distortion>
 	a lv2:Plugin ;
 	lv2:binary <ankh-3band-distortion.so>  ;

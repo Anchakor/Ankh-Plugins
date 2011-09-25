@@ -17,7 +17,8 @@
 ###
 NAMEPREFIX = ankh-
 NAME = $(NAMEPREFIX)plugins
-PLUGINS = distortion 3band-distortion
+PLUGINS = distortion 3band-distortion 4band-compressor
+
 HEADERS = *.hpp *.h
 MISC = LICENSE.txt Makefile
 ###
