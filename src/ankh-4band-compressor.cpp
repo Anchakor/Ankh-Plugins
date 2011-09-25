@@ -96,6 +96,21 @@ public:
             freqOld[2] = *p<float>(6);
         }
 
+		for(int i=0; i < 4; i++) {
+			if(0 == i) {
+				comp1->setRatio(*(p<float>(7)));
+				comp1->setThreshold(*(p<float>(11)));
+			} else if(1 == i) {
+				comp2->setRatio(*(p<float>(8)));
+				comp2->setThreshold(*(p<float>(12)));
+			} else if(2 == i) {
+				comp3->setRatio(*(p<float>(9)));
+				comp3->setThreshold(*(p<float>(13)));
+			} else if(3 == i) {
+				comp4->setRatio(*(p<float>(10)));
+				comp4->setThreshold(*(p<float>(14)));
+			}
+		}
         for(uint32_t sample=0; sample < sample_count; sample++){
             float toutl = 0.0;
             float toutr = 0.0;
@@ -107,8 +122,6 @@ public:
                 left  = *(p<float>(0)+sample);
                 right = *(p<float>(1)+sample);
                 if(0 == i) {
-					comp1->setRatio(*(p<float>(7)));
-					comp1->setThreshold(*(p<float>(11)));
 					comp1->process(&left, &right, &toutl, &toutr);
                     toutl = lpL0.process(toutl);
                     toutr = lpR0.process(toutr);
@@ -117,8 +130,6 @@ public:
                     outl += toutl;
                     outr += toutr;
                 } else if(1 == i) {
-					comp2->setRatio(*(p<float>(8)));
-					comp2->setThreshold(*(p<float>(12)));
 					comp2->process(&left, &right, &toutl, &toutr);
                     toutl = lpL1.process(toutl);
                     toutr = lpR1.process(toutr);
@@ -131,8 +142,6 @@ public:
                     outl += toutl;
                     outr += toutr;
                 } else if(2 == i) {
-					comp3->setRatio(*(p<float>(9)));
-					comp3->setThreshold(*(p<float>(13)));
 					comp3->process(&left, &right, &toutl, &toutr);
                     toutl = lpL2.process(toutl);
                     toutr = lpR2.process(toutr);
@@ -145,8 +154,6 @@ public:
                     outl += toutl;
                     outr += toutr;
                 } else if(3 == i) {
-					comp4->setRatio(*(p<float>(10)));
-					comp4->setThreshold(*(p<float>(14)));
 					comp4->process(&left, &right, &toutl, &toutr);
                     toutl = hpL2.process(toutl);
                     toutr = hpR2.process(toutr);
