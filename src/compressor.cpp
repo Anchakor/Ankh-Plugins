@@ -19,6 +19,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define CMAX(a,b) (a>b?a:b)
 
@@ -82,7 +83,7 @@ public:
 		det = CMAX(fabs(*input_left),fabs(*input_right));
 		det += 10e-30; /* add tiny DC offset (-600dB) to prevent denormals */
 
-		env = (det >= env) ? det : det+envelope_decay * (env-det);
+		env = (det >= env) ? det : det + envelope_decay * (env - det);
 
 		transfer_gain = (env > threshold) ? pow(env,transfer_A) * transfer_B : output;
 
@@ -92,6 +93,7 @@ public:
 
 		*output_left = *input_left * gain;
 		*output_right = *input_right * gain;
+//		printf("CBAND: %f\t%f\t%f\t%f\n", *input_left, *input_right, transfer_gain, env);
     }
 
 };
