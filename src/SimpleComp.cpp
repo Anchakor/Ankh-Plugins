@@ -36,7 +36,7 @@ namespace chunkware_simple
 	// simple compressor
 	//-------------------------------------------------------------
 	SimpleComp::SimpleComp()
-		: AttRelEnvelope( 10.0, 100.0 )
+		: AttRelEnvelope( 5.0, 50.0 )
 		, threshdB_( 0.0 )
 		, ratio_( 1.0 )
 		, envdB_( DC_OFFSET )
