@@ -21,7 +21,7 @@ PLUGINS = distortion 3band-distortion 4band-compressor
 OTHER = LV2Plugin SimpleEnvelope SimpleComp
 
 HEADERS = *.hpp *.h
-MISC = LICENSE.txt Makefile
+MISC = LICENSE.txt README.txt Makefile
 ###
 
 CXXC=g++
@@ -71,4 +71,4 @@ clean:
 	rm -rf $(BUNDLE) $(BDIR)
 
 pack:
-	zip $(NAME).zip $(MISC) $(addprefix $(SDIR)/, $(TTLS) $(SRCS) $(HEADERS))
+	zip -r $(NAME).zip $(MISC) $(SDIR)
