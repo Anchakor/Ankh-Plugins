@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "LV2Plugin.hpp"
-#include "compressor.cpp"
+#include "SimpleComp.h"
 #include "biquad.h"
 
 
@@ -35,12 +35,12 @@
 
 class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
-    double samplerate;
+    float samplerate;
 
-    Ankh::Compressor *comp1;
-    Ankh::Compressor *comp2;
-    Ankh::Compressor *comp3;
-    Ankh::Compressor *comp4;
+	chunkware_simple::SimpleComp *comp1;
+    chunkware_simple::SimpleComp *comp2;
+    chunkware_simple::SimpleComp *comp3;
+    chunkware_simple::SimpleComp *comp4;
 
     dsp::biquad_d2<float> lpL0, lpR0, lpL1, lpR1, hpL0, hpR0, lpL2, lpR2, hpL1, hpR1, hpL2, hpR2;
     float freqOld[3];
@@ -48,13 +48,13 @@ private:
 protected:
 
 public:
-    ANKHPLUGIN(double sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
+    ANKHPLUGIN(float sample_rate, const char*, const LV2::Feature* const*) : LV2::Plugin<ANKHPLUGIN>(NPARAMETERS+NINSOUTS) {
         samplerate = sample_rate;
 
-        comp1 = new Ankh::Compressor();
-        comp2 = new Ankh::Compressor();
-        comp3 = new Ankh::Compressor();
-        comp4 = new Ankh::Compressor();
+        comp1 = new chunkware_simple::SimpleComp();
+        comp2 = new chunkware_simple::SimpleComp();
+        comp3 = new chunkware_simple::SimpleComp();
+        comp4 = new chunkware_simple::SimpleComp();
     }
 
     ~ANKHPLUGIN() {
@@ -99,70 +99,70 @@ public:
 		for(int i=0; i < 4; i++) {
 			if(0 == i) {
 				comp1->setRatio(*(p<float>(7)));
-				comp1->setThreshold(*(p<float>(11)));
+				comp1->setThresh(*(p<float>(11)));
 			} else if(1 == i) {
 				comp2->setRatio(*(p<float>(8)));
-				comp2->setThreshold(*(p<float>(12)));
+				comp2->setThresh(*(p<float>(12)));
 			} else if(2 == i) {
 				comp3->setRatio(*(p<float>(9)));
-				comp3->setThreshold(*(p<float>(13)));
+				comp3->setThresh(*(p<float>(13)));
 			} else if(3 == i) {
 				comp4->setRatio(*(p<float>(10)));
-				comp4->setThreshold(*(p<float>(14)));
+				comp4->setThresh(*(p<float>(14)));
 			}
 		}
         for(uint32_t sample=0; sample < sample_count; sample++){
-            float toutl = 0.0;
-            float toutr = 0.0;
             float outl = 0.0;
             float outr = 0.0;
 			float left;
 			float right;
-            for(int i=0; i < 4; i++) {
+            for(int i=0; i < 5; i++) {
                 left  = *(p<float>(0)+sample);
                 right = *(p<float>(1)+sample);
-                if(0 == i) {
-					comp1->process(&left, &right, &toutl, &toutr);
-                    toutl = lpL0.process(toutl);
-                    toutr = lpR0.process(toutr);
+				if(4 == i) { goto outputit;
+				} else if(0 == i) {
+					comp1->process(left, right);
+                    left = lpL0.process(left);
+                    right = lpR0.process(right);
                     lpL0.sanitize();
                     lpR0.sanitize();
-                    outl += toutl;
-                    outr += toutr;
+                    outl += left;
+                    outr += right;
                 } else if(1 == i) {
-					comp2->process(&left, &right, &toutl, &toutr);
-                    toutl = lpL1.process(toutl);
-                    toutr = lpR1.process(toutr);
-                    toutl = hpL0.process(toutl);
-                    toutr = hpR0.process(toutr);
+					comp2->process(left, right);
+                    left = lpL1.process(left);
+                    right = lpR1.process(right);
+                    left = hpL0.process(left);
+                    right = hpR0.process(right);
                     lpL1.sanitize();
                     lpR1.sanitize();
                     hpL0.sanitize();
                     hpR0.sanitize();
-                    outl += toutl;
-                    outr += toutr;
+                    outl += left;
+                    outr += right;
                 } else if(2 == i) {
-					comp3->process(&left, &right, &toutl, &toutr);
-                    toutl = lpL2.process(toutl);
-                    toutr = lpR2.process(toutr);
-                    toutl = hpL1.process(toutl);
-                    toutr = hpR1.process(toutr);
+					comp3->process(left, right);
+                    left = lpL2.process(left);
+                    right = lpR2.process(right);
+                    left = hpL1.process(left);
+                    right = hpR1.process(right);
                     lpL2.sanitize();
                     lpR2.sanitize();
                     hpL1.sanitize();
                     hpR1.sanitize();
-                    outl += toutl;
-                    outr += toutr;
+                    outl += left;
+                    outr += right;
                 } else if(3 == i) {
-					comp4->process(&left, &right, &toutl, &toutr);
-                    toutl = hpL2.process(toutl);
-                    toutr = hpR2.process(toutr);
+					comp4->process(left, right);
+                    left = hpL2.process(left);
+                    right = hpR2.process(right);
                     hpL2.sanitize();
                     hpR2.sanitize();
-                    outl += toutl;
-                    outr += toutr;
+                    outl += left;
+                    outr += right;
                 }
             }
+outputit:
 			outl = (*(p<float>(15)) * outl) + ((1 - *(p<float>(15))) * left);
 			outr = (*(p<float>(15)) * outr) + ((1 - *(p<float>(15))) * right);
             *(p<float>(2)+sample) = hardclip(outl);

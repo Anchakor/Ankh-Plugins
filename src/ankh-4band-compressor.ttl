@@ -96,72 +96,72 @@
 		lv2:index 7 ;
 		lv2:symbol "ratio1" ;
 		lv2:name "Low Ratio" ;
-		lv2:default 16.0 ;
-		lv2:minimum 2.0 ;
-		lv2:maximum 42.0 ;
+		lv2:default 2.0 ;
+		lv2:minimum 0.2 ;
+		lv2:maximum 20.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 8 ;
 		lv2:symbol "ratio2" ;
 		lv2:name "Mid-Low Ratio" ;
-		lv2:default 16.0 ;
-		lv2:minimum 2.0 ;
-		lv2:maximum 42.0 ;
+		lv2:default 2.0 ;
+		lv2:minimum 0.2 ;
+		lv2:maximum 20.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 9 ;
 		lv2:symbol "ratio3" ;
 		lv2:name "Mid-High Ratio" ;
-		lv2:default 16.0 ;
-		lv2:minimum 2.0 ;
-		lv2:maximum 42.0 ;
+		lv2:default 2.0 ;
+		lv2:minimum 0.2 ;
+		lv2:maximum 20.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 10 ;
 		lv2:symbol "ratio4" ;
 		lv2:name "High Ratio" ;
-		lv2:default 16.0 ;
-		lv2:minimum 2.0 ;
-		lv2:maximum 42.0 ;
+		lv2:default 2.0 ;
+		lv2:minimum 0.2 ;
+		lv2:maximum 20.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 11 ;
 		lv2:symbol "threshold1" ;
 		lv2:name "Low Threshold" ;
-		lv2:default 0.0 ;
+		lv2:default -40.0 ;
 		lv2:minimum -70.0 ;
-		lv2:maximum 24.0 ;
+		lv2:maximum 0.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 12 ;
 		lv2:symbol "threshold2" ;
 		lv2:name "Mid-Low Threshold" ;
-		lv2:default 0.0 ;
+		lv2:default -40.0 ;
 		lv2:minimum -70.0 ;
-		lv2:maximum 24.0 ;
+		lv2:maximum 0.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 13 ;
 		lv2:symbol "threshold3" ;
 		lv2:name "Mid-High Threshold" ;
-		lv2:default 0.0 ;
+		lv2:default -40.0 ;
 		lv2:minimum -70.0 ;
-		lv2:maximum 24.0 ;
+		lv2:maximum 0.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;
 		lv2:index 14 ;
 		lv2:symbol "threshold4" ;
 		lv2:name "High Threshold" ;
-		lv2:default 0.0 ;
+		lv2:default -40.0 ;
 		lv2:minimum -70.0 ;
-		lv2:maximum 24.0 ;
+		lv2:maximum 0.0 ;
 	] ,	[
 		a lv2:InputPort ,
 			lv2:ControlPort ;

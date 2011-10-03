@@ -18,13 +18,14 @@
 NAMEPREFIX = ankh-
 NAME = $(NAMEPREFIX)plugins
 PLUGINS = distortion 3band-distortion 4band-compressor
+OTHER = LV2Plugin SimpleEnvelope SimpleComp
 
 HEADERS = *.hpp *.h
 MISC = LICENSE.txt Makefile
 ###
 
 CXXC=g++
-CXXFLAGS=-g -Wall
+CXXFLAGS=-g -Wall -O3
 
 BDIR = build
 SDIR = src
@@ -33,6 +34,9 @@ SRCS = $(addprefix $(NAMEPREFIX), $(addsuffix .cpp, $(PLUGINS)))
 LIBS = $(addprefix $(NAMEPREFIX), $(addsuffix .so, $(PLUGINS)))
 TTLS = manifest.ttl $(addprefix $(NAMEPREFIX), $(addsuffix .ttl, $(PLUGINS)))
 COMPONENTS = $(addprefix $(BDIR)/, $(LIBS) $(TTLS))
+
+OTHEROS = $(addprefix $(BDIR)/, $(addsuffix .o, $(OTHER)))
+#OTHERSRCS = $(addprefix $(SDIR), $(addsuffix .cpp, $(OTHER)))
 
 BUNDLE = $(NAME).lv2
 INSTALL_DIR = /usr/lib/lv2
@@ -46,8 +50,8 @@ $(BDIR):
 	rm -rf $(BDIR)
 	mkdir -p $(BDIR)
 
-$(BDIR)/%.so: $(BDIR)/%.o $(BDIR)/LV2Plugin.o
-	$(CXXC) $(CXXFLAGS) -shared -fPIC -DPIC $< $(BDIR)/LV2Plugin.o -o $@
+$(BDIR)/%.so: $(BDIR)/%.o $(OTHEROS)
+	$(CXXC) $(CXXFLAGS) -shared -fPIC -DPIC $< $(OTHEROS) -o $@
 
 $(BDIR)/%.o: $(SDIR)/%.cpp
 	$(CXXC) $(CXXFLAGS) -c $< -o $@
