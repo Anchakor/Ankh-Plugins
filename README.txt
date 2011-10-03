@@ -7,6 +7,12 @@ http://lv2plug.in/
 
 Currently consists of distortion, 3-band distortion, 4-band compressor plugins.
 
+
+= Dependencies =
+
+lv2core
+
+
 = Install & Uninstall =
 
   make
