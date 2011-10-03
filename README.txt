@@ -5,6 +5,7 @@ Audio plugins for use with LV2 supporting hosts.
 http://mud.cz/lv2/plugins
 http://lv2plug.in/
 
+Currently consists of distortion, 3-band distortion, 4-band compressor plugins.
 
 = Install & Uninstall =
 
