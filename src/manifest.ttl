@@ -1,5 +1,8 @@
 # LV2 Bundle Manifest
 #
+# Copyright 2011 Jiří Procházka <ojirio@gmail.com>
+# 				 Gabriel M. Beddingfield
+#
 # All LV2 plugins are installed as "bundles", a directory with a particular
 # format.  Inside the bundle, the entry point is a file called "manifest.ttl".
 # This file lists what plugins are in this bundle, and which files are (.so,
