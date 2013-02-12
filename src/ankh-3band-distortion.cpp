@@ -66,16 +66,16 @@ public:
     
     void run(uint32_t sample_count) {
         if(*p<float>(4) != freqOld[0]) {
-            lpL0.set_lp_rbj(*(p<float>(4)) * (1.0 + 0.17), 1.0, (float)samplerate);
+            lpL0.set_lp_rbj(*(p<float>(4)) * (1.0 + 0.29), 0.7, (float)samplerate);
             lpR0.copy_coeffs(lpL0);
-            hpL0.set_hp_rbj(*(p<float>(4)) * (1.0 - 0.17), 1.0, (float)samplerate);
+            hpL0.set_hp_rbj(*(p<float>(4)) * (1.0 - 0.29), 0.7, (float)samplerate);
             hpR0.copy_coeffs(hpL0);
             freqOld[0] = *p<float>(4);
         }
         if(*p<float>(5) != freqOld[1]) {
-            lpL1.set_lp_rbj(*(p<float>(5)) * (1.0 + 0.17), 1.0, (float)samplerate);
+            lpL1.set_lp_rbj(*(p<float>(5)) * (1.0 + 0.29), 0.7, (float)samplerate);
             lpR1.copy_coeffs(lpL1);
-            hpL1.set_hp_rbj(*(p<float>(5)) * (1.0 - 0.17), 1.0, (float)samplerate);
+            hpL1.set_hp_rbj(*(p<float>(5)) * (1.0 - 0.29), 0.7, (float)samplerate);
             hpR1.copy_coeffs(hpL1);
             freqOld[1] = *p<float>(5);
         }
