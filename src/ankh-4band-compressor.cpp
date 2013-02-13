@@ -78,33 +78,33 @@ public:
     
     void run(uint32_t sample_count) {
         if(*p<float>(4) != freqOld[0]) {
-            lpL0n0.set_lp_rbj(*(p<float>(4)) * (1.0 + 0.29), 0.7, (float)samplerate);
+            lpL0n0.set_lp_rbj(*(p<float>(4)), 0.7071, (float)samplerate);
             lpR0n0.copy_coeffs(lpL0n0);
             lpL0n1.copy_coeffs(lpL0n0);
             lpR0n1.copy_coeffs(lpL0n0);
-            hpL0n0.set_hp_rbj(*(p<float>(4)) * (1.0 - 0.29), 0.7, (float)samplerate);
+            hpL0n0.set_hp_rbj(*(p<float>(4)), 0.7071, (float)samplerate);
             hpR0n0.copy_coeffs(hpL0n0);
             hpL0n1.copy_coeffs(hpL0n0);
             hpR0n1.copy_coeffs(hpL0n0);
             freqOld[0] = *p<float>(4);
         }
         if(*p<float>(5) != freqOld[1]) {
-            lpL1n0.set_lp_rbj(*(p<float>(5)) * (1.0 + 0.29), 0.7, (float)samplerate);
+            lpL1n0.set_lp_rbj(*(p<float>(5)), 0.7071, (float)samplerate);
             lpR1n0.copy_coeffs(lpL1n0);
             lpL1n1.copy_coeffs(lpL1n0);
             lpR1n1.copy_coeffs(lpL1n0);
-            hpL1n0.set_hp_rbj(*(p<float>(5)) * (1.0 - 0.29), 0.7, (float)samplerate);
+            hpL1n0.set_hp_rbj(*(p<float>(5)), 0.7071, (float)samplerate);
             hpR1n0.copy_coeffs(hpL1n0);
             hpL1n1.copy_coeffs(hpL1n0);
             hpR1n1.copy_coeffs(hpL1n0);
             freqOld[1] = *p<float>(5);
         }
         if(*p<float>(6) != freqOld[2]) {
-            lpL2n0.set_lp_rbj(*(p<float>(6)) * (1.0 + 0.29), 0.7, (float)samplerate);
+            lpL2n0.set_lp_rbj(*(p<float>(6)), 0.7071, (float)samplerate);
             lpR2n0.copy_coeffs(lpL2n0);
             lpL2n1.copy_coeffs(lpL2n0);
             lpR2n1.copy_coeffs(lpL2n0);
-            hpL2n0.set_hp_rbj(*(p<float>(6)) * (1.0 - 0.29), 0.7, (float)samplerate);
+            hpL2n0.set_hp_rbj(*(p<float>(6)), 0.7071, (float)samplerate);
             hpR2n0.copy_coeffs(hpL2n0);
             hpL2n1.copy_coeffs(hpL2n0);
             hpR2n1.copy_coeffs(hpL2n0);
