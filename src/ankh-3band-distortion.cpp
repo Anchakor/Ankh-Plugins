@@ -41,7 +41,9 @@ private:
     Ankh::Distortion *distl2, *distr2;
     Ankh::Distortion *distl3, *distr3;
 
-    dsp::biquad_d2<float> lpL0, lpR0, lpL1, lpR1, hpL0, hpR0, hpL1, hpR1;
+    dsp::biquad_d2<float> lpL0n0, lpR0n0, lpL0n1, lpR0n1,
+        hpL0n0, hpR0n0, hpL0n1, hpR0n1, lpL1n0, lpR1n0, lpL1n1, lpR1n1, 
+        hpL1n0, hpR1n0, hpL1n1, hpR1n1;
     float freqOld[2];
 
 protected:
@@ -66,17 +68,25 @@ public:
     
     void run(uint32_t sample_count) {
         if(*p<float>(4) != freqOld[0]) {
-            lpL0.set_lp_rbj(*(p<float>(4)) * (1.0 + 0.29), 0.7, (float)samplerate);
-            lpR0.copy_coeffs(lpL0);
-            hpL0.set_hp_rbj(*(p<float>(4)) * (1.0 - 0.29), 0.7, (float)samplerate);
-            hpR0.copy_coeffs(hpL0);
+            lpL0n0.set_lp_rbj(*(p<float>(4)), 0.7071, (float)samplerate);
+            lpR0n0.copy_coeffs(lpL0n0);
+            lpL0n1.copy_coeffs(lpL0n0);
+            lpR0n1.copy_coeffs(lpL0n0);
+            hpL0n0.set_hp_rbj(*(p<float>(4)), 0.7071, (float)samplerate);
+            hpR0n0.copy_coeffs(hpL0n0);
+            hpL0n1.copy_coeffs(hpL0n0);
+            hpR0n1.copy_coeffs(hpL0n0);
             freqOld[0] = *p<float>(4);
         }
         if(*p<float>(5) != freqOld[1]) {
-            lpL1.set_lp_rbj(*(p<float>(5)) * (1.0 + 0.29), 0.7, (float)samplerate);
-            lpR1.copy_coeffs(lpL1);
-            hpL1.set_hp_rbj(*(p<float>(5)) * (1.0 - 0.29), 0.7, (float)samplerate);
-            hpR1.copy_coeffs(hpL1);
+            lpL1n0.set_lp_rbj(*(p<float>(5)), 0.7071, (float)samplerate);
+            lpR1n0.copy_coeffs(lpL1n0);
+            lpL1n1.copy_coeffs(lpL1n0);
+            lpR1n1.copy_coeffs(lpL1n0);
+            hpL1n0.set_hp_rbj(*(p<float>(5)), 0.7071, (float)samplerate);
+            hpR1n0.copy_coeffs(hpL1n0);
+            hpL1n1.copy_coeffs(hpL1n0);
+            hpR1n1.copy_coeffs(hpL1n0);
             freqOld[1] = *p<float>(5);
         }
 
@@ -101,10 +111,14 @@ public:
                             p<float>(6), 
                             p<float>(7), 
                             p<float>(8));
-                    toutl = lpL0.process(toutl);
-                    toutr = lpR0.process(toutr);
-                    lpL0.sanitize();
-                    lpR0.sanitize();
+                    toutl = lpL0n0.process(toutl);
+                    toutl = lpL0n1.process(toutl);
+                    toutr = lpR0n0.process(toutr);
+                    toutl = lpR0n1.process(toutl);
+                    lpL0n0.sanitize();
+                    lpL0n1.sanitize();
+                    lpR0n0.sanitize();
+                    lpR0n1.sanitize();
                     outl += toutl * *p<float>(18);
                     outr += toutr * *p<float>(18);
                 } else if(1 == i) {
@@ -120,14 +134,22 @@ public:
                             p<float>(10), 
                             p<float>(11), 
                             p<float>(12));
-                    toutl = lpL1.process(toutl);
-                    toutr = lpR1.process(toutr);
-                    toutl = hpL0.process(toutl);
-                    toutr = hpR0.process(toutr);
-                    lpL1.sanitize();
-                    lpR1.sanitize();
-                    hpL0.sanitize();
-                    hpR0.sanitize();
+                    toutl = hpL0n0.process(toutl);
+                    toutl = hpL0n1.process(toutl);
+                    toutr = hpR0n0.process(toutr);
+                    toutr = hpR0n1.process(toutr);
+                    toutl = lpL1n0.process(toutl);
+                    toutl = lpL1n1.process(toutl);
+                    toutr = lpR1n0.process(toutr);
+                    toutr = lpR1n1.process(toutr);
+                    hpL0n0.sanitize();
+                    hpL0n1.sanitize();
+                    hpR0n0.sanitize();
+                    hpR0n1.sanitize();
+                    lpL1n0.sanitize();
+                    lpL1n1.sanitize();
+                    lpR1n0.sanitize();
+                    lpR1n1.sanitize();
                     outl += toutl * *p<float>(19);
                     outr += toutr * *p<float>(19);
                 } else if(2 == i) {
@@ -143,10 +165,14 @@ public:
                             p<float>(14), 
                             p<float>(15), 
                             p<float>(16));
-                    toutl = hpL1.process(toutl);
-                    toutr = hpR1.process(toutr);
-                    hpL1.sanitize();
-                    hpR1.sanitize();
+                    toutl = hpL1n0.process(toutl);
+                    toutl = hpL1n1.process(toutl);
+                    toutr = hpR1n0.process(toutr);
+                    toutr = hpR1n1.process(toutr);
+                    hpL1n0.sanitize();
+                    hpL1n1.sanitize();
+                    hpR1n0.sanitize();
+                    hpR1n1.sanitize();
                     outl += toutl * *p<float>(20);
                     outr += toutr * *p<float>(20);
                 }
