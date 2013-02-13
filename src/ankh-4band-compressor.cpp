@@ -37,7 +37,7 @@ class ANKHPLUGIN : public LV2::Plugin<ANKHPLUGIN> {
 private:
     float samplerate;
 
-	chunkware_simple::SimpleComp *comp1;
+    chunkware_simple::SimpleComp *comp1;
     chunkware_simple::SimpleComp *comp2;
     chunkware_simple::SimpleComp *comp3;
     chunkware_simple::SimpleComp *comp4;
@@ -96,32 +96,32 @@ public:
             freqOld[2] = *p<float>(6);
         }
 
-		for(int i=0; i < 4; i++) {
-			if(0 == i) {
-				comp1->setRatio(*(p<float>(7)));
-				comp1->setThresh(*(p<float>(11)));
-			} else if(1 == i) {
-				comp2->setRatio(*(p<float>(8)));
-				comp2->setThresh(*(p<float>(12)));
-			} else if(2 == i) {
-				comp3->setRatio(*(p<float>(9)));
-				comp3->setThresh(*(p<float>(13)));
-			} else if(3 == i) {
-				comp4->setRatio(*(p<float>(10)));
-				comp4->setThresh(*(p<float>(14)));
-			}
-		}
+        for(int i=0; i < 4; i++) {
+            if(0 == i) {
+                comp1->setRatio(*(p<float>(7)));
+                comp1->setThresh(*(p<float>(11)));
+            } else if(1 == i) {
+                comp2->setRatio(*(p<float>(8)));
+                comp2->setThresh(*(p<float>(12)));
+            } else if(2 == i) {
+                comp3->setRatio(*(p<float>(9)));
+                comp3->setThresh(*(p<float>(13)));
+            } else if(3 == i) {
+                comp4->setRatio(*(p<float>(10)));
+                comp4->setThresh(*(p<float>(14)));
+            }
+        }
         for(uint32_t sample=0; sample < sample_count; sample++){
             float outl = 0.0;
             float outr = 0.0;
-			float left;
-			float right;
+            float left;
+            float right;
             for(int i=0; i < 5; i++) {
                 left  = *(p<float>(0)+sample);
                 right = *(p<float>(1)+sample);
-				if(4 == i) { goto outputit;
-				} else if(0 == i) {
-					comp1->process(left, right);
+                if(4 == i) { goto outputit;
+                } else if(0 == i) {
+                    comp1->process(left, right);
                     left = lpL0.process(left);
                     right = lpR0.process(right);
                     lpL0.sanitize();
@@ -129,7 +129,7 @@ public:
                     outl += left;
                     outr += right;
                 } else if(1 == i) {
-					comp2->process(left, right);
+                    comp2->process(left, right);
                     left = lpL1.process(left);
                     right = lpR1.process(right);
                     left = hpL0.process(left);
@@ -141,7 +141,7 @@ public:
                     outl += left;
                     outr += right;
                 } else if(2 == i) {
-					comp3->process(left, right);
+                    comp3->process(left, right);
                     left = lpL2.process(left);
                     right = lpR2.process(right);
                     left = hpL1.process(left);
@@ -153,7 +153,7 @@ public:
                     outl += left;
                     outr += right;
                 } else if(3 == i) {
-					comp4->process(left, right);
+                    comp4->process(left, right);
                     left = hpL2.process(left);
                     right = hpR2.process(right);
                     hpL2.sanitize();
@@ -163,8 +163,8 @@ public:
                 }
             }
 outputit:
-			outl = (*(p<float>(15)) * outl) + ((1 - *(p<float>(15))) * left);
-			outr = (*(p<float>(15)) * outr) + ((1 - *(p<float>(15))) * right);
+            outl = (*(p<float>(15)) * outl) + ((1 - *(p<float>(15))) * left);
+            outr = (*(p<float>(15)) * outr) + ((1 - *(p<float>(15))) * right);
             *(p<float>(2)+sample) = hardclip(outl);
             *(p<float>(3)+sample) = hardclip(outr);
         }
