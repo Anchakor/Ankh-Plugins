@@ -67,6 +67,13 @@ void zero(T *data, unsigned int size) {
         *data++ = value;
 }
 
+/// Set array (buffer or anything similar) to vector of values
+template<class T>
+void fill(T *data, T value, unsigned int size) {
+    for (unsigned int i=0; i<size; i++)
+        *data++ = value;
+}
+
 template<class T = float>struct stereo_sample {
     T left;
     T right;
@@ -408,6 +415,16 @@ inline void sanitize(float &value)
 }
 
 /**
+ * Force already-denormal float value to zero
+ */
+inline void sanitize_denormal(float& value)
+{
+    if (((*(unsigned int *) &value) & 0x7f800000) == 0) {
+        value = 0;
+    }
+}
+	
+/**
  * Force "small enough" double value to zero
  */
 inline void sanitize(double &value)
@@ -510,6 +527,12 @@ inline float hermite_interpolation(float x, float x0, float x1, float p0, float 
     
     return ct3 * t3 + ct2 * t2 + ct1 * t + ct0;
     //return (2*t3 - 3*t2 + 1) * p0 + (t3 - 2*t2 + t) * m0 + (-2*t3 + 3*t2) * p1 + (t3-t2) * m1;
+}
+
+/// convert amplitude value to dB
+inline float amp2dB(float amp)
+{
+    return 6.0 * log(amp) / log(2);
 }
 
 };
