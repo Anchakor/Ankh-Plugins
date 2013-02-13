@@ -42,7 +42,10 @@ private:
     chunkware_simple::SimpleComp *comp3;
     chunkware_simple::SimpleComp *comp4;
 
-    dsp::biquad_d2<float> lpL0, lpR0, lpL1, lpR1, hpL0, hpR0, lpL2, lpR2, hpL1, hpR1, hpL2, hpR2;
+    dsp::biquad_d2<float> lpL0n0, lpR0n0, lpL0n1, lpR0n1,
+        hpL0n0, hpR0n0, hpL0n1, hpR0n1, lpL1n0, lpR1n0, lpL1n1, lpR1n1, 
+        hpL1n0, hpR1n0, hpL1n1, hpR1n1, lpL2n0, lpR2n0, lpL2n1, lpR2n1, 
+        hpL2n0, hpR2n0, hpL2n1, hpR2n1;
     float freqOld[3];
 
 protected:
@@ -75,24 +78,36 @@ public:
     
     void run(uint32_t sample_count) {
         if(*p<float>(4) != freqOld[0]) {
-            lpL0.set_lp_rbj(*(p<float>(4)) * (1.0 + 0.29), 0.7, (float)samplerate);
-            lpR0.copy_coeffs(lpL0);
-            hpL0.set_hp_rbj(*(p<float>(4)) * (1.0 - 0.29), 0.7, (float)samplerate);
-            hpR0.copy_coeffs(hpL0);
+            lpL0n0.set_lp_rbj(*(p<float>(4)) * (1.0 + 0.29), 0.7, (float)samplerate);
+            lpR0n0.copy_coeffs(lpL0n0);
+            lpL0n1.copy_coeffs(lpL0n0);
+            lpR0n1.copy_coeffs(lpL0n0);
+            hpL0n0.set_hp_rbj(*(p<float>(4)) * (1.0 - 0.29), 0.7, (float)samplerate);
+            hpR0n0.copy_coeffs(hpL0n0);
+            hpL0n1.copy_coeffs(hpL0n0);
+            hpR0n1.copy_coeffs(hpL0n0);
             freqOld[0] = *p<float>(4);
         }
         if(*p<float>(5) != freqOld[1]) {
-            lpL1.set_lp_rbj(*(p<float>(5)) * (1.0 + 0.29), 0.7, (float)samplerate);
-            lpR1.copy_coeffs(lpL1);
-            hpL1.set_hp_rbj(*(p<float>(5)) * (1.0 - 0.29), 0.7, (float)samplerate);
-            hpR1.copy_coeffs(hpL1);
+            lpL1n0.set_lp_rbj(*(p<float>(5)) * (1.0 + 0.29), 0.7, (float)samplerate);
+            lpR1n0.copy_coeffs(lpL1n0);
+            lpL1n1.copy_coeffs(lpL1n0);
+            lpR1n1.copy_coeffs(lpL1n0);
+            hpL1n0.set_hp_rbj(*(p<float>(5)) * (1.0 - 0.29), 0.7, (float)samplerate);
+            hpR1n0.copy_coeffs(hpL1n0);
+            hpL1n1.copy_coeffs(hpL1n0);
+            hpR1n1.copy_coeffs(hpL1n0);
             freqOld[1] = *p<float>(5);
         }
         if(*p<float>(6) != freqOld[2]) {
-            lpL2.set_lp_rbj(*(p<float>(6)) * (1.0 + 0.29), 0.7, (float)samplerate);
-            lpR2.copy_coeffs(lpL2);
-            hpL2.set_hp_rbj(*(p<float>(6)) * (1.0 - 0.29), 0.7, (float)samplerate);
-            hpR2.copy_coeffs(hpL2);
+            lpL2n0.set_lp_rbj(*(p<float>(6)) * (1.0 + 0.29), 0.7, (float)samplerate);
+            lpR2n0.copy_coeffs(lpL2n0);
+            lpL2n1.copy_coeffs(lpL2n0);
+            lpR2n1.copy_coeffs(lpL2n0);
+            hpL2n0.set_hp_rbj(*(p<float>(6)) * (1.0 - 0.29), 0.7, (float)samplerate);
+            hpR2n0.copy_coeffs(hpL2n0);
+            hpL2n1.copy_coeffs(hpL2n0);
+            hpR2n1.copy_coeffs(hpL2n0);
             freqOld[2] = *p<float>(6);
         }
 
@@ -122,42 +137,66 @@ public:
                 if(4 == i) { goto outputit;
                 } else if(0 == i) {
                     comp1->process(left, right);
-                    left = lpL0.process(left);
-                    right = lpR0.process(right);
-                    lpL0.sanitize();
-                    lpR0.sanitize();
+                    left = lpL0n0.process(left);
+                    left = lpL0n1.process(left);
+                    right = lpR0n0.process(right);
+                    right = lpR0n1.process(right);
+                    lpL0n0.sanitize();
+                    lpL0n1.sanitize();
+                    lpR0n0.sanitize();
+                    lpR0n1.sanitize();
                     outl += left;
                     outr += right;
                 } else if(1 == i) {
                     comp2->process(left, right);
-                    left = lpL1.process(left);
-                    right = lpR1.process(right);
-                    left = hpL0.process(left);
-                    right = hpR0.process(right);
-                    lpL1.sanitize();
-                    lpR1.sanitize();
-                    hpL0.sanitize();
-                    hpR0.sanitize();
+                    left = lpL1n0.process(left);
+                    left = lpL1n1.process(left);
+                    right = lpR1n0.process(right);
+                    right = lpR1n1.process(right);
+                    left = hpL0n0.process(left);
+                    left = hpL0n1.process(left);
+                    right = hpR0n0.process(right);
+                    right = hpR0n1.process(right);
+                    lpL1n0.sanitize();
+                    lpL1n1.sanitize();
+                    lpR1n0.sanitize();
+                    lpR1n1.sanitize();
+                    hpL0n0.sanitize();
+                    hpL0n1.sanitize();
+                    hpR0n0.sanitize();
+                    hpR0n1.sanitize();
                     outl += left;
                     outr += right;
                 } else if(2 == i) {
                     comp3->process(left, right);
-                    left = lpL2.process(left);
-                    right = lpR2.process(right);
-                    left = hpL1.process(left);
-                    right = hpR1.process(right);
-                    lpL2.sanitize();
-                    lpR2.sanitize();
-                    hpL1.sanitize();
-                    hpR1.sanitize();
+                    left = lpL2n0.process(left);
+                    left = lpL2n1.process(left);
+                    right = lpR2n0.process(right);
+                    right = lpR2n1.process(right);
+                    left = hpL1n0.process(left);
+                    left = hpL1n1.process(left);
+                    right = hpR1n0.process(right);
+                    right = hpR1n1.process(right);
+                    lpL2n0.sanitize();
+                    lpL2n1.sanitize();
+                    lpR2n0.sanitize();
+                    lpR2n1.sanitize();
+                    hpL1n0.sanitize();
+                    hpL1n1.sanitize();
+                    hpR1n0.sanitize();
+                    hpR1n1.sanitize();
                     outl += left;
                     outr += right;
                 } else if(3 == i) {
                     comp4->process(left, right);
-                    left = hpL2.process(left);
-                    right = hpR2.process(right);
-                    hpL2.sanitize();
-                    hpR2.sanitize();
+                    left = hpL2n0.process(left);
+                    left = hpL2n1.process(left);
+                    right = hpR2n0.process(right);
+                    right = hpR2n1.process(right);
+                    hpL2n0.sanitize();
+                    hpL2n1.sanitize();
+                    hpR2n0.sanitize();
+                    hpR2n1.sanitize();
                     outl += left;
                     outr += right;
                 }
