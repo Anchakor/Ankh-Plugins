@@ -114,7 +114,7 @@ public:
                     toutl = lpL0n0.process(toutl);
                     toutl = lpL0n1.process(toutl);
                     toutr = lpR0n0.process(toutr);
-                    toutl = lpR0n1.process(toutl);
+                    toutr = lpR0n1.process(toutr);
                     lpL0n0.sanitize();
                     lpL0n1.sanitize();
                     lpR0n0.sanitize();
