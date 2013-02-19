@@ -113,7 +113,8 @@ public:
     }
 };
 
-/// all pass linkwitz riley filter 2
+/// all pass linkwitz riley filter 2 - doesn't work
+/*
 class filterAPLR2 : public filterLRbase
 {
 public:
