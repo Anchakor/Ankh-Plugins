@@ -113,7 +113,8 @@ public:
     }
 };
 
-/// all pass linkwitz riley filter 2
+/// all pass linkwitz riley filter 2 - doesn't work
+/*
 class filterAPLR2 : public filterLRbase
 {
 public:
@@ -125,5 +126,6 @@ public:
         R0n1.copy_coeffs(L0n0);
     }
 };
+*/
 
 
